@@ -35,6 +35,7 @@ def guardar_en_sheets(data):
         data.get("odontologo", ""),
         data.get("especialidad", ""),
         data.get("codigo_paciente", ""),
+        data.get("edad", ""),
         data.get("servicio", ""),
         data.get("dolor_inicial", ""),
         data.get("molestia_inicial", ""),
@@ -170,20 +171,39 @@ with right:
     with c0_2:
         especialidad = st.selectbox(
             "Especialidad",
-            ["Odontología general", "Endodoncia", "Periodoncia", "Cirugía oral", "Medicina oral"]
+            [
+                "Odontología general",
+                "Endodoncia",
+                "Periodoncia",
+                "Cirugía oral",
+                "Ortodoncia",
+                "Odontopediatría",
+                "Medicina oral"
+            ]
         )
 
-    c0_3, c0_4 = st.columns(2)
+    c0_3, c0_4, c0_5 = st.columns(3)
     with c0_3:
         odontologo = st.text_input("Nombre del odontólogo")
     with c0_4:
         codigo_paciente = st.text_input("Código del paciente")
+    with c0_5:
+        edad = st.number_input("Edad del paciente", min_value=0, max_value=120, step=1)
 
     st.markdown("### Evaluación inicial")
 
     servicio = st.selectbox(
         "Seleccione servicio",
-        ["Endodoncia", "Periodoncia", "Cirugía oral", "Aftas", "Mucositis"]
+        [
+            "Odontología general",
+            "Endodoncia",
+            "Periodoncia",
+            "Cirugía oral",
+            "Ortodoncia",
+            "Odontopediatría",
+            "Aftas",
+            "Mucositis"
+        ]
     )
 
     c1, c2 = st.columns(2)
@@ -198,6 +218,7 @@ with right:
         "odontologo": odontologo,
         "especialidad": especialidad,
         "codigo_paciente": codigo_paciente,
+        "edad": edad,
         "servicio": servicio,
         "dolor_inicial": dolor_inicial,
         "molestia_inicial": molestia_inicial,
@@ -245,6 +266,20 @@ with right:
             ["Ninguno", "Leve", "Moderado", "Severo"]
         )
         data["sangrado"] = sangrado
+
+    if servicio == "Ortodoncia":
+        procedimiento = st.selectbox(
+            "Tipo de caso ortodóncico",
+            ["Control", "Inicio tratamiento", "Ajuste", "Urgencia"]
+        )
+        data["procedimiento"] = procedimiento
+
+    if servicio == "Odontopediatría":
+        diagnostico = st.selectbox(
+            "Motivo de consulta",
+            ["Caries", "Dolor", "Control", "Trauma", "Infección"]
+        )
+        data["diagnostico"] = diagnostico
 
     st.markdown("### Uso de Trimetrix")
 
