@@ -2,15 +2,28 @@ import streamlit as st
 import pandas as pd
 import base64
 
-# 🔹 Fondo con imagen
+# ===============================
+# 🔹 CONFIGURACIÓN PÁGINA
+# ===============================
+st.set_page_config(
+    page_title="Trimetrix Registro Clínico",
+    layout="centered"
+)
+
+# ===============================
+# 🔹 FONDO CON OVERLAY (CLAVE)
+# ===============================
 def set_bg(image_file):
     with open(image_file, "rb") as f:
         data = f.read()
     encoded = base64.b64encode(data).decode()
+
     st.markdown(f"""
     <style>
     .stApp {{
-        background-image: url("data:image/png;base64,{encoded}");
+        background-image: 
+            linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+            url("data:image/png;base64,{encoded}");
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
@@ -18,11 +31,13 @@ def set_bg(image_file):
     </style>
     """, unsafe_allow_html=True)
 
-# 👉 usa tu imagen del frasco (sin ADN)
+# 👉 asegúrate que el archivo exista en GitHub
 set_bg("fondo.png")
 
 
-# 🔹 ESTILO PREMIUM TRANSPARENTE (GLASS)
+# ===============================
+# 🔹 ESTILO PREMIUM (GLASS)
+# ===============================
 st.markdown("""
 <style>
 
@@ -34,27 +49,33 @@ h1 {
     font-weight: 600;
 }
 
-/* Tarjeta transparente */
+/* Tarjeta */
 .block-container {
-    background: rgba(255, 255, 255, 0.08);  /* 🔥 súper transparente */
-    backdrop-filter: blur(12px);            /* efecto vidrio */
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(8px);
     padding: 40px;
     border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
 /* Inputs */
-.stSelectbox div, .stNumberInput div, .stTextInput div {
+.stSelectbox div, .stNumberInput div {
     background-color: rgba(255,255,255,0.1) !important;
     border-radius: 10px !important;
 }
 
-/* Texto */
-label, .stSlider {
+/* Labels */
+label {
+    color: white !important;
+    font-weight: 500;
+}
+
+/* Sliders */
+.stSlider span {
     color: white !important;
 }
 
-/* Botón premium */
+/* Botón */
 .stButton>button {
     background: linear-gradient(90deg, #00AEEF, #00D1B2);
     color: white;
@@ -74,11 +95,15 @@ label, .stSlider {
 """, unsafe_allow_html=True)
 
 
+# ===============================
 # 🔹 TÍTULO
+# ===============================
 st.markdown("# Trimetrix – Registro Clínico")
 
 
+# ===============================
 # 🔹 FORMULARIO
+# ===============================
 servicio = st.selectbox(
     "Seleccione servicio",
     ["Endodoncia", "Periodoncia", "Cirugía oral", "Aftas", "Mucositis"]
@@ -98,7 +123,9 @@ data = {
     "molestia": molestia
 }
 
+# ===============================
 # 🔹 LÓGICA CLÍNICA
+# ===============================
 if servicio == "Aftas":
     lesiones = st.number_input("Número de lesiones", 1)
     data["lesiones"] = lesiones
@@ -119,11 +146,17 @@ if servicio == "Periodoncia":
     sangrado = st.selectbox("Sangrado gingival", ["Ninguno", "Leve", "Moderado", "Severo"])
     data["sangrado"] = sangrado
 
+
+# ===============================
+# 🔹 USO DEL PRODUCTO
+# ===============================
 uso = st.selectbox("¿Se indicó Trimetrix?", ["Sí", "No"])
 data["uso"] = uso
 
 
-# 🔹 GUARDAR
+# ===============================
+# 🔹 GUARDAR DATOS
+# ===============================
 if st.button("Guardar registro clínico"):
     df = pd.DataFrame([data])
     df.to_csv("datos_trimetrix.csv", mode='a', header=False, index=False)
