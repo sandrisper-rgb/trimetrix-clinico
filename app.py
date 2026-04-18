@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import base64
 
-# 🔹 Función para poner fondo con imagen
+# 🔹 Fondo con imagen
 def set_bg(image_file):
     with open(image_file, "rb") as f:
         data = f.read()
@@ -18,47 +18,67 @@ def set_bg(image_file):
     </style>
     """, unsafe_allow_html=True)
 
-# 👉 IMPORTANTE: sube la imagen a GitHub como "fondo.png"
+# 👉 usa tu imagen del frasco (sin ADN)
 set_bg("fondo.png")
 
-# 🔹 Estilo premium
+
+# 🔹 ESTILO PREMIUM TRANSPARENTE (GLASS)
 st.markdown("""
 <style>
+
 /* Título */
 h1 {
-    color: #00AEEF;
-    text-align: center;
-    font-size: 40px;
-}
-
-/* Tarjetas */
-.block-container {
-    background: rgba(15, 23, 42, 0.85);
-    padding: 30px;
-    border-radius: 15px;
-}
-
-/* Botón */
-.stButton>button {
-    background: linear-gradient(90deg, #00AEEF, #00D1B2);
     color: white;
-    border-radius: 10px;
-    font-size: 16px;
-    height: 50px;
-    width: 100%;
+    text-align: center;
+    font-size: 42px;
+    font-weight: 600;
+}
+
+/* Tarjeta transparente */
+.block-container {
+    background: rgba(255, 255, 255, 0.08);  /* 🔥 súper transparente */
+    backdrop-filter: blur(12px);            /* efecto vidrio */
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Inputs */
+.stSelectbox div, .stNumberInput div, .stTextInput div {
+    background-color: rgba(255,255,255,0.1) !important;
+    border-radius: 10px !important;
 }
 
 /* Texto */
-label, .stSelectbox, .stSlider {
+label, .stSlider {
     color: white !important;
 }
+
+/* Botón premium */
+.stButton>button {
+    background: linear-gradient(90deg, #00AEEF, #00D1B2);
+    color: white;
+    border-radius: 12px;
+    font-size: 16px;
+    height: 50px;
+    width: 100%;
+    border: none;
+}
+
+/* Hover botón */
+.stButton>button:hover {
+    opacity: 0.9;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
-# 🔹 Título
-st.markdown("# 🧬 Trimetrix – Registro Clínico")
 
-# 🔹 Formulario
+# 🔹 TÍTULO
+st.markdown("# Trimetrix – Registro Clínico")
+
+
+# 🔹 FORMULARIO
 servicio = st.selectbox(
     "Seleccione servicio",
     ["Endodoncia", "Periodoncia", "Cirugía oral", "Aftas", "Mucositis"]
@@ -78,7 +98,7 @@ data = {
     "molestia": molestia
 }
 
-# 🔹 Lógica clínica
+# 🔹 LÓGICA CLÍNICA
 if servicio == "Aftas":
     lesiones = st.number_input("Número de lesiones", 1)
     data["lesiones"] = lesiones
@@ -102,7 +122,8 @@ if servicio == "Periodoncia":
 uso = st.selectbox("¿Se indicó Trimetrix?", ["Sí", "No"])
 data["uso"] = uso
 
-# 🔹 Guardar
+
+# 🔹 GUARDAR
 if st.button("Guardar registro clínico"):
     df = pd.DataFrame([data])
     df.to_csv("datos_trimetrix.csv", mode='a', header=False, index=False)
