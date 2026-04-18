@@ -3,6 +3,7 @@ import pandas as pd
 import base64
 import gspread
 from google.oauth2.service_account import Credentials
+from datetime import datetime
 
 # ===============================
 # CONFIG
@@ -30,6 +31,7 @@ def conectar_sheet():
 def guardar_en_sheets(data):
     sheet = conectar_sheet()
     sheet.append_row([
+        data.get("fecha", ""),
         data.get("servicio", ""),
         data.get("dolor", ""),
         data.get("molestia", ""),
@@ -84,6 +86,13 @@ label {
 
 /* INPUTS */
 [data-baseweb="select"] > div {
+    background: rgba(255,255,255,0.10) !important;
+    border-radius: 12px;
+    color: white !important;
+}
+
+/* number input */
+.stNumberInput > div > div {
     background: rgba(255,255,255,0.10) !important;
     border-radius: 12px;
     color: white !important;
@@ -145,6 +154,7 @@ with right:
         molestia = st.slider("Molestia oral (0-10)", 0, 10)
 
     data = {
+        "fecha": datetime.now().strftime("%Y-%m-%d %H:%M"),
         "servicio": servicio,
         "dolor": dolor,
         "molestia": molestia,
