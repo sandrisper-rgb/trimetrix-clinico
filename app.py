@@ -70,15 +70,6 @@ set_bg("fondo.png")
 st.markdown("""
 <style>
 
-/* TARJETA GLASS */
-.form-card {
-    background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(12px);
-    padding: 40px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.15);
-}
-
 /* TÍTULO */
 h1 {
     color: white;
@@ -118,6 +109,14 @@ label {
 .stButton>button:hover {
     opacity: 0.9;
 }
+
+/* Espaciado general */
+.block-container {
+    padding-top: 1.5rem;
+    padding-bottom: 2rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -130,8 +129,6 @@ with left:
     st.markdown(" ")
 
 with right:
-    st.markdown('<div class="form-card">', unsafe_allow_html=True)
-
     st.markdown("# Trimetrix – Registro Clínico")
 
     servicio = st.selectbox(
@@ -197,5 +194,3 @@ with right:
             st.success("Registro guardado correctamente en Google Sheets")
         except Exception as e:
             st.error(f"Error al guardar: {e}")
-
-    st.markdown('</div>', unsafe_allow_html=True)
