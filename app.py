@@ -38,7 +38,9 @@ def guardar_en_sheets(data):
         data.get("edad", ""),
         data.get("servicio", ""),
         data.get("dolor_inicial", ""),
-        data.get("molestia_inicial", ""),
+        data.get("causa_lesion", ""),
+        data.get("tipo_lesion", ""),
+        data.get("tamano_lesion_inicial", ""),
         data.get("diagnostico", ""),
         data.get("grado", ""),
         data.get("lesiones", ""),
@@ -47,12 +49,14 @@ def guardar_en_sheets(data):
         data.get("uso", ""),
         data.get("frecuencia", ""),
         data.get("dias_uso", ""),
-        data.get("dolor_posterior", ""),
-        data.get("molestia_posterior", ""),
-        data.get("mejoria", ""),
-        data.get("tolerancia", ""),
-        data.get("observaciones", ""),
-        data.get("lo_usaria_nuevamente", "")
+        data.get("dolor_dia1", ""),
+        data.get("tamano_dia1", ""),
+        data.get("dolor_dia3", ""),
+        data.get("tamano_dia3", ""),
+        data.get("dolor_dia7", ""),
+        data.get("tamano_dia7", ""),
+        data.get("dias_resolucion", ""),
+        data.get("reaccion_adversa", "")
     ])
 
 # ===============================
@@ -160,6 +164,9 @@ with left:
 with right:
     st.markdown("# Trimetrix – Registro Clínico")
 
+    # ===============================
+    # DATOS DEL PROFESIONAL Y DEL CASO
+    # ===============================
     st.markdown("### Datos del profesional y del caso")
 
     c0_1, c0_2 = st.columns(2)
@@ -190,6 +197,9 @@ with right:
     with c0_5:
         edad = st.number_input("Edad del paciente", min_value=0, max_value=120, step=1)
 
+    # ===============================
+    # EVALUACIÓN INICIAL
+    # ===============================
     st.markdown("### Evaluación inicial")
 
     servicio = st.selectbox(
@@ -206,11 +216,21 @@ with right:
         ]
     )
 
+    dolor_inicial = st.slider("Dolor inicial (0-10)", 0, 10)
+
+    causa_lesion = st.text_area("Causa de la lesión")
+
     c1, c2 = st.columns(2)
     with c1:
-        dolor_inicial = st.slider("Dolor inicial (0-10)", 0, 10)
+        tipo_lesion = st.selectbox(
+            "Tipo de lesión",
+            ["Única", "Múltiple"]
+        )
     with c2:
-        molestia_inicial = st.slider("Molestia oral inicial (0-10)", 0, 10)
+        tamano_lesion_inicial = st.selectbox(
+            "Tamaño de la lesión",
+            ["< a 2 mm", "> a 2 mm"]
+        )
 
     data = {
         "fecha": datetime.now().strftime("%Y-%m-%d %H:%M"),
@@ -221,7 +241,9 @@ with right:
         "edad": edad,
         "servicio": servicio,
         "dolor_inicial": dolor_inicial,
-        "molestia_inicial": molestia_inicial,
+        "causa_lesion": causa_lesion,
+        "tipo_lesion": tipo_lesion,
+        "tamano_lesion_inicial": tamano_lesion_inicial,
         "diagnostico": "",
         "grado": "",
         "lesiones": "",
@@ -230,12 +252,14 @@ with right:
         "uso": "",
         "frecuencia": "",
         "dias_uso": "",
-        "dolor_posterior": "",
-        "molestia_posterior": "",
-        "mejoria": "",
-        "tolerancia": "",
-        "observaciones": "",
-        "lo_usaria_nuevamente": ""
+        "dolor_dia1": "",
+        "tamano_dia1": "",
+        "dolor_dia3": "",
+        "tamano_dia3": "",
+        "dolor_dia7": "",
+        "tamano_dia7": "",
+        "dias_resolucion": "",
+        "reaccion_adversa": ""
     }
 
     if servicio == "Aftas":
@@ -281,50 +305,88 @@ with right:
         )
         data["diagnostico"] = diagnostico
 
+    # ===============================
+    # USO DE TRIMETRIX
+    # ===============================
     st.markdown("### Uso de Trimetrix")
 
-    c3, c4, c5 = st.columns(3)
-    with c3:
-        uso = st.selectbox("¿Se indicó Trimetrix?", ["Sí", "No"])
-    with c4:
-        frecuencia = st.selectbox(
-            "Frecuencia de uso",
-            ["1 vez/día", "2 veces/día", "3 veces/día"]
-        )
-    with c5:
-        dias_uso = st.selectbox(
-            "Días de uso",
-            ["1", "3", "5", "7", "10", "14"]
-        )
-
+    uso = st.selectbox("¿Se indicó Trimetrix?", ["Sí", "No"])
     data["uso"] = uso
-    data["frecuencia"] = frecuencia
-    data["dias_uso"] = dias_uso
 
     if uso == "Sí":
+        c3, c4 = st.columns(2)
+
+        with c3:
+            frecuencia = st.selectbox(
+                "Frecuencia de uso",
+                ["1 vez/día", "2 veces/día"]
+            )
+        with c4:
+            dias_uso = st.selectbox(
+                "Días de uso",
+                ["1", "3", "5", "7"]
+            )
+
+        data["frecuencia"] = frecuencia
+        data["dias_uso"] = dias_uso
+
+        # ===============================
+        # SEGUIMIENTO
+        # ===============================
+        st.markdown("### Seguimiento con Trimetrix")
+
+        st.markdown("#### Día 1")
+        s1, s2 = st.columns(2)
+        with s1:
+            dolor_dia1 = st.slider("Dolor día 1 (0-10)", 0, 10)
+        with s2:
+            tamano_dia1 = st.selectbox(
+                "Tamaño día 1",
+                ["< a 2 mm", "> a 2 mm"]
+            )
+
+        st.markdown("#### Día 3")
+        s3, s4 = st.columns(2)
+        with s3:
+            dolor_dia3 = st.slider("Dolor día 3 (0-10)", 0, 10)
+        with s4:
+            tamano_dia3 = st.selectbox(
+                "Tamaño día 3",
+                ["< a 2 mm", "> a 2 mm"]
+            )
+
+        st.markdown("#### Día 7")
+        s5, s6 = st.columns(2)
+        with s5:
+            dolor_dia7 = st.slider("Dolor día 7 (0-10)", 0, 10)
+        with s6:
+            tamano_dia7 = st.selectbox(
+                "Tamaño día 7",
+                ["< a 2 mm", "> a 2 mm"]
+            )
+
+        # ===============================
+        # EVALUACIÓN POSTERIOR
+        # ===============================
         st.markdown("### Evaluación posterior al tratamiento")
 
-        c6, c7 = st.columns(2)
-        with c6:
-            dolor_posterior = st.slider("Dolor posterior (0-10)", 0, 10)
-        with c7:
-            molestia_posterior = st.slider("Molestia oral posterior (0-10)", 0, 10)
+        dias_resolucion = st.text_input(
+            "¿En cuántos días se resolvió la lesión?"
+        )
 
-        c8, c9 = st.columns(2)
-        with c8:
-            mejoria = st.selectbox("¿El paciente mejoró?", ["Sí", "Parcial", "No"])
-        with c9:
-            tolerancia = st.selectbox("Tolerancia al producto", ["Buena", "Regular", "Mala"])
+        reaccion_adversa = st.selectbox(
+            "¿Presentó reacción adversa no deseada?",
+            ["No", "Sí"]
+        )
 
-        observaciones = st.text_area("Observaciones clínicas postratamiento")
-        lo_usaria_nuevamente = st.selectbox("¿Lo usaría nuevamente?", ["Sí", "No"])
-
-        data["dolor_posterior"] = dolor_posterior
-        data["molestia_posterior"] = molestia_posterior
-        data["mejoria"] = mejoria
-        data["tolerancia"] = tolerancia
-        data["observaciones"] = observaciones
-        data["lo_usaria_nuevamente"] = lo_usaria_nuevamente
+        data["dolor_dia1"] = dolor_dia1
+        data["tamano_dia1"] = tamano_dia1
+        data["dolor_dia3"] = dolor_dia3
+        data["tamano_dia3"] = tamano_dia3
+        data["dolor_dia7"] = dolor_dia7
+        data["tamano_dia7"] = tamano_dia7
+        data["dias_resolucion"] = dias_resolucion
+        data["reaccion_adversa"] = reaccion_adversa
 
     if st.button("Guardar registro clínico"):
         try:
@@ -332,4 +394,3 @@ with right:
             st.success("Registro guardado correctamente en Google Sheets")
         except Exception as e:
             st.error(f"Error al guardar: {e}")
-
